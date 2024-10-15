@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <string>
-#include <cstring>
+#include <sstream>
 #include <set>
 #include "../include/headers.hpp"
 
@@ -40,22 +39,35 @@ char* get_algorithm_name(int argc, char* argv[])
 	return algorithm;
 }
 
-vector<array<int, 16>> get_s0_entries(int argc, char* argv[], int puzzle_size)
+vector<string> get_s0_entries(int argc, char* argv[], int puzzle_size)
 {
-	vector<array<int, 16>> entries;
-	array<int, 16> current_entries; 
-	int counter = 0;
-	for(int i = 2; i < argc; i++)
+	vector<string> entries;
+	stringstream argv_string;
+	argv_string  << argv + 2;
+	string current_entries;
+
+	while(getline(argv_string, current_entries, ','))
 	{
-		int temp;
-		sscanf(argv[i], "%d", &temp);
-		current_entries[counter] = temp;
-		counter++;
-		if(counter == puzzle_size)
-		{
-			counter = 0;
-			entries.push_back(current_entries);
-		}		
+		entries.push_back(current_entries);
 	}
 	return entries;
+}
+
+string init(string state_0)
+{
+	return state_0;
+}
+
+bool is_goal(string state, int n_puzzle)
+{
+	string goal_n_15 = "0123456789ABCDEF";
+	string goal_n_8 = "012345678";
+	if(n_puzzle == 15)
+	{
+		return goal_n_15.compare(state) == 0;
+	}
+	if(n_puzzle == 8)
+	{
+		return goal_n_8.compare(state) == 0;
+	}
 }
