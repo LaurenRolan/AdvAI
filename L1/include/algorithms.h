@@ -12,7 +12,7 @@ class BFS{
     deque<Node> open;
 
     public:
-    int run(deque<char> s0, int puzzle_size);
+    int run(deque<char> s0, char puzzle_size);
 };
 
 #endif

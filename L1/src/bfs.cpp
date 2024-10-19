@@ -1,4 +1,5 @@
-#include "../include/headers.h"
+#include "../include/utils.h"
+#include "../include/puzzle.h"
 #include "../include/algorithms.h"
 using namespace std;
 
@@ -39,9 +40,9 @@ using namespace std;
 // }
 
 
-int BFS::run(deque<char> s0, int puzzle_size)
+int BFS::run(deque<char> s0, char puzzle_size)
 {
-    State s0_compressed = init(s0);
+    State s0_compressed = init(s0, puzzle_size);
     if(is_goal(s0_compressed, puzzle_size))
     {
         return 0;

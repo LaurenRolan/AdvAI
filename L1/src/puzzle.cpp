@@ -58,30 +58,65 @@ deque<char> decompress_state(long long state, char puzzle_size)
             //TODO
         }
     }
+    return decompressed;
+}
+
+bool is_goal(State state, char puzzle_size)
+{
+	if(puzzle_size == 16)
+	{
+    	long long goal_n_16 = 81985529216486895; // 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111
+		return goal_n_16 == state.CompressedState;
+	}
+	if(puzzle_size == 9)
+	{
+        long long goal_n_9 = 305419896; // 0001 0010 0011 0100 0101 0110 0111 1000
+		return goal_n_9 == state.CompressedState;
+	}
+    return false;
 }
 
 // Get root node for a given initial state
 Node make_root_node(State s0)
 {
+    return Node {
+        s0,
+        0,
+        'n'
+    };
+}
 
+State init(deque<char> s0, char puzzle_size)
+{
+    long long compressed = compress_state(s0, puzzle_size);
+    return State
+    {
+        compressed,
+        1, //TODO: Manhattan distance of s_0
+    };
 }
 
 
-// bfs_node make_root_node(string s0)
-// {
-//     bfs_node root_node {
-//         nullptr,
-//         s0,
-//         0,
-//         'n'
-//     };
-//     return root_node;
-// }
+State next_state(State s, char action, char puzzle_size)
+{
+    //TODO
+    return State {
+        0,
+        0
+    };
+}
+
 
 // Get node for a given set of <s, s', a>
 // Since s' can be derived from <s, a>, only those are passed.
-Node make_node(Node* parent, char action, int puzzle_size){
-
+Node make_node(Node* parent, char action, char puzzle_size)
+{
+    State next = next_state(parent->state, action, puzzle_size);
+    return Node {
+        next,
+        parent->g + 1,
+        action
+    };
 }
 
 // Possible actions:
@@ -90,7 +125,7 @@ Node make_node(Node* parent, char action, int puzzle_size){
 // l -> move blank left
 // r -> move blank right
 // n -> none
-deque<char> succ(Node n, int puzzle_size)
+vector<char> succ(State state, char previous_action, char puzzle_size)
 {
     // string state = n.state;
     // char previous_action = n.action;
@@ -119,4 +154,7 @@ deque<char> succ(Node n, int puzzle_size)
     // }
     
     // return possible_actions;
+    vector<char> result;
+    result.push_back('n');
+    return result;
 }

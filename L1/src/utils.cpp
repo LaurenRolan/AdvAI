@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <set>
-#include "../include/headers.hpp"
+#include "../include/utils.h"
 
 using namespace std;
 
@@ -39,34 +39,28 @@ char* get_algorithm_name(int argc, char* argv[])
 	return algorithm;
 }
 
-vector<string> get_s0_entries(int argc, char* argv[], int puzzle_size)
+deque<deque<char>> get_s0_entries(int argc, char* argv[], char puzzle_size)
 {
-	vector<string> entries;
-	string current_entries;
-	char* lines = strtok(argv[0] + 2, ",");
-	while(lines != NULL)
-	{
-		cout << current_entries << "\n";
-		entries.push_back(current_entries);
-	}
+	deque<deque<char>> entries;
+	deque<char> line;
+
+	char counter = puzzle_size;
+    for (int i = 2; i < argc; ++i) {
+        stringstream ss(argv[i]);
+        int num;
+
+		if (ss.peek() == ' ' or ss.peek() == ',') {
+			ss.ignore(); // Ignore the comma separator
+		}
+		ss >> num;
+		line.push_back(static_cast<char>(num));
+		counter--;
+		if(counter == 0)
+		{
+	        entries.push_back(line);
+			counter = puzzle_size;
+			line.clear();
+		}
+    }
 	return entries;
-}
-
-string init(string state_0)
-{
-	return state_0;
-}
-
-bool is_goal(string state, int puzzle_size)
-{
-	string goal_n_15 = "0123456789ABCDEF";
-	string goal_n_8 = "012345678";
-	if(puzzle_size == 16)
-	{
-		return goal_n_15.compare(state) == 0;
-	}
-	if(puzzle_size == 9)
-	{
-		return goal_n_8.compare(state) == 0;
-	}
 }

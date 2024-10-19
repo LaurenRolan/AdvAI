@@ -11,12 +11,18 @@
 struct State
 {
     long long CompressedState;
-    std::byte h;
+    char h;
 
     friend bool operator==(const State& lhs, const State& rhs)
     {
         return lhs.CompressedState == rhs.CompressedState;
     }
+    
+    friend bool operator<(const State& lhs, const State& rhs)
+    {
+        return lhs.h < rhs.h;
+    }
+
 };
 
 // Node struct
@@ -35,6 +41,12 @@ struct Node
             lhs.g == rhs.g and
             lhs.action == rhs.action;
     }
+
+    friend bool operator<(const Node& lhs, const Node& rhs)
+    {
+        return lhs.state.h + lhs.g < rhs.state.h + rhs.g;
+    }
+
 };
 
 // Given a vector of chars representing the decompressed state, returns a long long.
@@ -46,18 +58,20 @@ std::deque<char> decompress_state(long long state, char puzzle_size);
 // Get root node for a given initial state
 Node make_root_node(State s0);
 
+// Get the next state ginve <s, a>
+State next_state(State s, char action, char puzzle_size);
+
 // Get node for a given set of <s, s', a>
 // Since s' can be derived from <s, a>, only those are passed.
 Node make_node(Node* parent, char action, char puzzle_size);
 
-
 // Get the initial state
-State init(std::deque<char> state_0);
+State init(std::deque<char> state_0, char puzzle_size);
 
 // Check if the state is a goal state for a given puzzle_size
-bool is_goal(State state, int puzzle_size);
+bool is_goal(State state, char puzzle_size);
 
 // Get the successors for a given state and puzzle_size
-std::vector<char> succ(State state, int puzzle_size, char previous_action);
+std::vector<char> succ(State state, char previous_action, char puzzle_size);
 
 #endif
