@@ -48,6 +48,12 @@ int main(int argc, char* argv[])
 	deque<char> state2 = decompress_state(result2, puzzle_size);
 	print_state(state2);
 
+	cout << "Manhattan: \n";
+	State s1 = {result1, 0};
+	State s2 = {result2, 0};
+	cout << int(get_h(s1, 9)) << "\n"; 
+	cout << int(get_h(s2, 9)) << "\n"; 
+
 	// cout << "s0: " << s0.c_str() << "\n";
 	// cout << is_goal(s0, puzzle_size) << "\n";
 	// cout << is_goal(init(s0), puzzle_size) << "\n";

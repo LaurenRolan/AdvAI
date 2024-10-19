@@ -5,6 +5,9 @@
 #include <deque>
 #include <vector>
 
+const long long GOAL_N_15 = 81985529216486895; // 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111
+const long long GOAL_N_8 = 305419896; // 0001 0010 0011 0100 0101 0110 0111 1000
+
 enum Algorithm
 {
     BFS,
@@ -21,7 +24,7 @@ enum Algorithm
 struct State
 {
     long long CompressedState;
-    char h;
+    int h;
 
     friend bool operator==(const State& lhs, const State& rhs)
     {
@@ -59,11 +62,16 @@ struct Node
 
 };
 
+#pragma region StateManagement
 // Given a vector of chars representing the decompressed state, returns a long long.
 long long compress_state(std::deque<char> state, char puzzle_size);
 
 // Given a long long representation of a compressed state, returns a vector of chars.
 std::deque<char> decompress_state(long long state, char puzzle_size);
+
+// Calculates the Manhattan distance for a given state
+char get_h(State state, char puzzle_size);
+#pragma endregion
 
 // Get root node for a given initial state
 Node make_root_node(State s0);

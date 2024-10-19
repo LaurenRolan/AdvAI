@@ -1,5 +1,6 @@
 #include "../include/puzzle.h"
 #include <iostream>
+#include<math.h>  
 
 using namespace std;
 
@@ -31,10 +32,8 @@ deque<char> decompress_state(long long state, char puzzle_size)
     {
         char last_byte = state & mask_byte;
         state = state >> 8;
-        cout << state << "  ";
         char pos_1 = last_byte & mask_small;
         char pos_0 = (last_byte & (mask_small << 4)) >> 4;
-        cout << int(pos_0) << " " << int(pos_1) << "\n";
         decompressed.push_front(pos_1);
         if(decompressed.size() < puzzle_size)
             decompressed.push_front(pos_0);
@@ -42,17 +41,30 @@ deque<char> decompress_state(long long state, char puzzle_size)
     return decompressed;
 }
 
+char get_h(State state, char puzzle_size)
+{
+    deque<char> decompressed = decompress_state(state.CompressedState, puzzle_size);
+    char width = puzzle_size == 9 ? 3 : 4;
+
+    char distance = 0;
+    for(int i = 0; i < decompressed.size(); i++)
+    {
+        char val = decompressed[i];
+        if(val != 0)
+            distance += abs(val % 3 - i % 3) + abs(floor(val / 3) - floor(i / 3));
+    }
+    return distance;
+}
+
 bool is_goal(State state, char puzzle_size)
 {
 	if(puzzle_size == 16)
 	{
-    	long long goal_n_16 = 81985529216486895; // 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111
-		return goal_n_16 == state.CompressedState;
+		return GOAL_N_15 == state.CompressedState;
 	}
 	if(puzzle_size == 9)
 	{
-        long long goal_n_9 = 305419896; // 0001 0010 0011 0100 0101 0110 0111 1000
-		return goal_n_9 == state.CompressedState;
+		return GOAL_N_8 == state.CompressedState;
 	}
     return false;
 }
