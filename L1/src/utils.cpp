@@ -21,7 +21,7 @@ int get_puzzle_size(int argc, char* argv[])
 		return 16;
 	}
 
-	cout << "\nInvalid number of state entries. Should be a multiple of 8 or 15.\n";
+	cout << "\nInvalid number of state entries. Should be a multiple of 9 or 16.\n";
 	cout << argc;
 	return -1;
 }
@@ -42,12 +42,11 @@ char* get_algorithm_name(int argc, char* argv[])
 vector<string> get_s0_entries(int argc, char* argv[], int puzzle_size)
 {
 	vector<string> entries;
-	stringstream argv_string;
-	argv_string  << argv + 2;
 	string current_entries;
-
-	while(getline(argv_string, current_entries, ','))
+	char* lines = strtok(argv[0] + 2, ",");
+	while(lines != NULL)
 	{
+		cout << current_entries << "\n";
 		entries.push_back(current_entries);
 	}
 	return entries;
@@ -58,15 +57,15 @@ string init(string state_0)
 	return state_0;
 }
 
-bool is_goal(string state, int n_puzzle)
+bool is_goal(string state, int puzzle_size)
 {
 	string goal_n_15 = "0123456789ABCDEF";
 	string goal_n_8 = "012345678";
-	if(n_puzzle == 15)
+	if(puzzle_size == 16)
 	{
 		return goal_n_15.compare(state) == 0;
 	}
-	if(n_puzzle == 8)
+	if(puzzle_size == 9)
 	{
 		return goal_n_8.compare(state) == 0;
 	}

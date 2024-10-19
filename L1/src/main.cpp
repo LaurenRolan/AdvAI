@@ -14,6 +14,17 @@ int main(int argc, char* argv[])
 	if(puzzle_size == -1 || algorithm_name == nullptr)
 		return 1;
 
-	cout << "Valid entries!";
+	cout << "test bfs\n";
+
+	string s0 = s0_entries.back();
+
+	cout << "s0: " << s0.c_str() << "\n";
+	cout << is_goal(s0, puzzle_size) << "\n";
+	cout << is_goal(init(s0), puzzle_size) << "\n";
+
+	BFS algo;
+	int path_size = algo.run(s0, puzzle_size);
+	cout << s0 << "   length: " << path_size << "\n";
+
 	return 0;
 }
