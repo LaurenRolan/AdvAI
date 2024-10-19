@@ -14,26 +14,11 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	int puzzle_size = get_puzzle_size(argc, argv);
-	char* algorithm_name = get_algorithm_name(argc, argv);
+	Algorithm algorithm = get_algorithm(argc, argv);
 	deque<deque<char>> s0_entries = get_s0_entries(argc, argv, puzzle_size);
 
-	if(puzzle_size == -1 || algorithm_name == nullptr)
+	if(puzzle_size == -1 || algorithm == Algorithm::NONE)
 		return 1;
-
-	cout << "test bfs\n";
-	// Example: print the parsed lines
-    for (size_t i = 0; i < s0_entries.size(); ++i) {
-        std::cout << "line" << i + 1 << " = [";
-        for (size_t j = 0; j < s0_entries[i].size(); ++j) {
-            std::cout << static_cast<int>(s0_entries[i][j]);
-            if (j < s0_entries[i].size() - 1) {
-                std::cout << ", ";
-            }
-        }
-        std::cout << "]" << std::endl;
-    }
-
-	deque<char> s0 = s0_entries.back();
 
 	// cout << "s0: " << s0.c_str() << "\n";
 	// cout << is_goal(s0, puzzle_size) << "\n";

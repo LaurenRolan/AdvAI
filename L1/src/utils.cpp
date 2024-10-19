@@ -26,17 +26,22 @@ int get_puzzle_size(int argc, char* argv[])
 	return -1;
 }
 
-char* get_algorithm_name(int argc, char* argv[])
+Algorithm get_algorithm(int argc, char* argv[])
 {
 	set<string> valid_algorithms = {"-bfs", "-idfs", "-astar", "-idastar", "-gbfs"};
 	if (valid_algorithms.find(argv[1]) == valid_algorithms.end())
 	{
 		cout << "\nInvalid algorithm. Use -bfs, -idfs, -astar, -idastar or -gbfs.";
-		return nullptr;
+		return Algorithm::NONE;
 	}
 
-	char* algorithm = argv[1] + 1;
-	return algorithm;
+	string algorithm = string(argv[1] + 1);
+	if(algorithm == "bfs") return Algorithm::BFS;
+	if(algorithm == "astar") return Algorithm::ASTAR;
+	if(algorithm == "idastar") return Algorithm::IDASTAR;
+	if(algorithm == "idfs") return Algorithm::IDFS;
+	if(algorithm == "gbfs") return Algorithm::GBFS;
+	return Algorithm::NONE;
 }
 
 deque<deque<char>> get_s0_entries(int argc, char* argv[], char puzzle_size)

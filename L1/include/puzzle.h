@@ -5,6 +5,16 @@
 #include <deque>
 #include <vector>
 
+enum Algorithm
+{
+    BFS,
+    IDFS,
+    GBFS,
+    ASTAR,
+    IDASTAR,
+    NONE
+};
+
 // State struct
 // CompressedState -> 8 bytes indicating the compressed state info
 // h -> heuristic value for this state (dist. Manhattan)
