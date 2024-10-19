@@ -1,4 +1,5 @@
 #include "../include/puzzle.h"
+#include <iostream>
 
 using namespace std;
 
@@ -6,57 +7,37 @@ long long compress_state(deque<char> state, char puzzle_size)
 {
     long long compressed = 0;
     char mask = 15; //0F
-    // vector: [byte_0, byte_1, ..., byte_X-1, byte_X]
-    for(int i = 0; i < state.size(); i++)
+    // vector: [pos_0, pos_1, ..., pos_X-1, pos_X]
+    for(int i = 0; i < puzzle_size; i++)
     {
-        char two_cells = state.front();
+        char cell = state.front();
         state.pop_front();
 
-        if(puzzle_size == 16)
-        {
-            compressed = (compressed | two_cells) << 8;
-            continue;
-        }
-
-        char cell_0 = two_cells & mask;
-        char cell_1 = two_cells & (mask << 4);
-
-        if(cell_0 == 15) //0F
-        {
-            compressed = (compressed | cell_0) << 4;
-            continue;
-        }
-        if(cell_1 == 15) //0F
-        {
-            compressed = (compressed | cell_1) << 4;
-            continue;   
-        }
-        compressed = (compressed | two_cells) << 8;
+        compressed = (compressed | cell);
+        if(i != puzzle_size - 1) compressed = compressed << 4;
     }
     return compressed;
 }
 
 deque<char> decompress_state(long long state, char puzzle_size)
 {
-    char checkpoint = puzzle_size == 9 ? 2 : 1;
+    char checkpoint = puzzle_size == 9 ? 5 : 8;
     char mask_small = 15; //0F
     char mask_byte = 255; //FF
-    char n_bytes = puzzle_size == 9 ? 6 : 8;
 
     deque<char> decompressed;
 
-    for(int i = 0; i < n_bytes; i++)
+    for(int i = 0; i < checkpoint; i++)
     {
-        char back = state & mask_byte;
+        char last_byte = state & mask_byte;
         state = state >> 8;
-        if(i % checkpoint == 0)
-        {
-            decompressed.push_back(back);
-        }
-        else
-        {
-            //TODO
-        }
+        cout << state << "  ";
+        char pos_1 = last_byte & mask_small;
+        char pos_0 = (last_byte & (mask_small << 4)) >> 4;
+        cout << int(pos_0) << " " << int(pos_1) << "\n";
+        decompressed.push_front(pos_1);
+        if(decompressed.size() < puzzle_size)
+            decompressed.push_front(pos_0);
     }
     return decompressed;
 }
