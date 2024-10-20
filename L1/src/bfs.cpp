@@ -1,70 +1,51 @@
 #include "../include/utils.h"
 #include "../include/puzzle.h"
 #include "../include/algorithms.h"
+#include <iostream>
 using namespace std;
 
-// bfs_node make_node(bfs_node* parent, char action, int puzzle_size)
-// {
-//     int width = puzzle_size == 9 ? 3 : 4;
-//     string current_state = parent->state;
-
-//     // Since action is possible, we just swap the right chars
-//     int blank_pos = current_state.find('0');
-//     string new_state = current_state;
-//     char swap_char = 'n';
-
-//     switch(action)
-//     {
-//         case 'u':
-//             swap_char = current_state[blank_pos - width];
-//             new_state[blank_pos - width] = '0';
-//             new_state[blank_pos] = swap_char;
-//             break;
-//         case 'd':
-//             swap_char = current_state[blank_pos + width];
-//             new_state[blank_pos + width] = '0';
-//             new_state[blank_pos] = swap_char;
-//             break;
-//         case 'l':
-//             swap_char = current_state[blank_pos - 1];
-//             new_state[blank_pos - 1] = '0';
-//             new_state[blank_pos] = swap_char;
-//             break;
-//         case 'r':
-//             swap_char = current_state[blank_pos + 1];
-//             new_state[blank_pos + 1] = '0';
-//             new_state[blank_pos] = swap_char;
-//             break;
-//     }
-//     return bfs_node {parent, new_state, parent->g + 1};
-// }
-
-
-int BFS::run(deque<char> s0, char puzzle_size)
+Result BFS::run(deque<char> s0, char puzzle_size)
 {
-    State s0_compressed = init(s0, puzzle_size);
-    if(is_goal(s0_compressed, puzzle_size))
-    {
-        return 0;
-    }
-    open.push_back(make_root_node(s0_compressed));
-    closed.insert(s0_compressed);
+    Result result;
+    set<State> closed;
+    deque<Node> open;
     
+    result.start_timer();
+    State s0_state = init(s0, puzzle_size);
+    if(is_goal(s0_state, puzzle_size))
+    {
+        result.stop_timer();
+        result.set_optimal_lenght(0);
+        result.set_h_initial(s0_state.h);
+        result.increase_h(s0_state.h);
+        return result;
+    }
+
+    Node n0 = make_root_node(s0_state);
+    open.push_back(n0);
+    closed.insert(s0_state);
+    result.set_h_initial(n0.state.h);
+
     while(!open.empty())
     {
         Node n = open.front();
         open.pop_front();
+        result.increase_expanded();
 
-        vector<char> successors = succ(n.state, puzzle_size, n.action);
-        while(!successors.empty())
+        vector<tuple<long long, char>> successors = succ(n, n.action, puzzle_size);
+        for(auto successor: successors)
         {
-            char action = successors.back();
-            successors.pop_back();
-            Node n_line = make_node(&n, action, puzzle_size);
+            long long state = get<0>(successor);
+            char action = get<1>(successor);
+            
+            Node n_line = make_node(n.g, state, action, puzzle_size);
+            result.increase_generated();
 
             if(is_goal(n_line.state, puzzle_size))
             {
-                return 0;//extract path
+                result.set_optimal_lenght(n_line.g);
+                result.stop_timer();
+                return result;
             }
 
             if(closed.find(n_line.state) == closed.end())
@@ -74,5 +55,7 @@ int BFS::run(deque<char> s0, char puzzle_size)
             }
         };
     }
-    return -1;
+    result.stop_timer();
+    result.set_h_total(-1);
+    return result;
 }

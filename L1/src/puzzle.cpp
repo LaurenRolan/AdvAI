@@ -1,6 +1,8 @@
 #include "../include/puzzle.h"
 #include <iostream>
-#include<math.h>  
+#include <fstream>
+#include <math.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -41,15 +43,14 @@ deque<char> decompress_state(long long state, char puzzle_size)
     return decompressed;
 }
 
-char get_h(State state, char puzzle_size)
+char get_h(deque<char> state, char puzzle_size)
 {
-    deque<char> decompressed = decompress_state(state.CompressedState, puzzle_size);
     char width = puzzle_size == 9 ? 3 : 4;
 
     char distance = 0;
-    for(int i = 0; i < decompressed.size(); i++)
+    for(int i = 0; i < state.size(); i++)
     {
-        char val = decompressed[i];
+        char val = state[i];
         if(val != 0)
             distance += abs(val % 3 - i % 3) + abs(floor(val / 3) - floor(i / 3));
     }
@@ -85,31 +86,46 @@ State init(deque<char> s0, char puzzle_size)
     return State
     {
         compressed,
-        1, //TODO: Manhattan distance of s_0
+        get_h(s0, puzzle_size)
     };
 }
 
-
-State next_state(State s, char action, char puzzle_size)
+int get_index(deque<char> state, char target)
 {
-    //TODO
-    return State {
-        0,
-        0
-    };
+    auto it = find(state.begin(), state.end(), target);
+    if (it != state.end()) {
+        return distance(state.begin(), it);
+    } else {
+        std::cout << "target not found in the deque." << std::endl;
+    }
+    return -1;
+}
+
+deque<char> swap(deque<char> state, int index1, int index2)
+{
+    deque<char> new_state = state;
+    char temp = new_state[index1];
+    new_state[index1] = new_state[index2];
+    new_state[index2] = temp;
+    return new_state;
 }
 
 
 // Get node for a given set of <s, s', a>
 // Since s' can be derived from <s, a>, only those are passed.
-Node make_node(Node* parent, char action, char puzzle_size)
+Node make_node(int cost, long long state, char action, char puzzle_size)
 {
-    State next = next_state(parent->state, action, puzzle_size);
-    return Node {
-        next,
-        parent->g + 1,
+    State s_line = {
+        state,
+        get_h(decompress_state(state, puzzle_size), puzzle_size)
+    };
+
+    Node node = {
+        s_line,
+        cost + 1,
         action
     };
+    return node;
 }
 
 // Possible actions:
@@ -118,36 +134,81 @@ Node make_node(Node* parent, char action, char puzzle_size)
 // l -> move blank left
 // r -> move blank right
 // n -> none
-vector<char> succ(State state, char previous_action, char puzzle_size)
+vector<tuple<long long, char>> succ(Node parent, char previous_action, char puzzle_size)
 {
-    // string state = n.state;
-    // char previous_action = n.action;
-    // vector<char> possible_actions;
-    // int width = (puzzle_size == 9) ? 3 : 4;
-    // int blank_pos = state.find('0');
+    deque<char> decompressed = decompress_state(parent.state.CompressedState, puzzle_size);
+    int width = (puzzle_size == 9) ? 3 : 4;
 
-    // if((blank_pos <= puzzle_size - width) and previous_action != 'u')
-    // {
-    //     possible_actions.push_back('d');
-    // }
-    // // Se o blank não atingiu a margem direita e previous_action != 'l'
-    // if((blank_pos + 1) % width != 0 and previous_action != 'l')
-    // {
-    //     possible_actions.push_back('r');
-    // }
-    // // Se o blank não está na margem esquerda e previous_action != 'r'
-    // if(blank_pos % width != 0 and previous_action != 'r')
-    // {
-    //     possible_actions.push_back('l');
-    // }
-    // // Se o blank não está na linha do topo e previous_action != 'd'
-    // if(blank_pos >= width and previous_action != 'd')
-    // {
-    //     possible_actions.push_back('u');
-    // }
-    
-    // return possible_actions;
-    vector<char> result;
-    result.push_back('n');
-    return result;
+    vector<tuple<long long, char>> successors;
+    int blank_index = get_index(decompressed, 0);
+    int swap_index;
+
+    // Se o blank não está na última linha e previous_action != 'u'
+    if((blank_index <= puzzle_size - width) and previous_action != 'u')
+    {
+        swap_index = blank_index + width;
+        long long compressed = compress_state(swap(decompressed, blank_index, swap_index), puzzle_size);
+        successors.push_back(make_tuple(compressed, 'd'));
+    }
+    // Se o blank não atingiu a margem direita e previous_action != 'l'
+    if((blank_index + 1) % width != 0 and previous_action != 'l')
+    {
+        swap_index = blank_index + 1;
+        long long compressed = compress_state(swap(decompressed, blank_index, swap_index), puzzle_size);
+        successors.push_back(make_tuple(compressed, 'r'));
+    }
+    // Se o blank não está na margem esquerda e previous_action != 'r'
+    if(blank_index % width != 0 and previous_action != 'r')
+    {
+        swap_index = blank_index - 1;
+        long long compressed = compress_state(swap(decompressed, blank_index, swap_index), puzzle_size);
+        successors.push_back(make_tuple(compressed, 'l'));
+    }
+    // Se o blank não está na linha do topo e previous_action != 'd'
+    if(blank_index >= width and previous_action != 'd')
+    {
+        swap_index = blank_index - width;
+        long long compressed = compress_state(swap(decompressed, blank_index, swap_index), puzzle_size);
+        successors.push_back(make_tuple(compressed, 'u'));
+    }
+    return successors;
 }
+
+#pragma region ResultManagement
+void Result::start_timer() { start_time = clock(); }
+void Result::stop_timer() { duration = float(clock() - start_time)/CLOCKS_PER_SEC; }
+void Result::increase_expanded() { expanded_nodes++; }
+void Result::increase_generated() { generated_nodes++; }
+void Result::set_optimal_lenght(int lenght) { optimal_length = lenght; }
+
+void Result::get_result()
+{
+    avg_h = total_h/max(counter, 1);
+    string res = "";
+    res += to_string(expanded_nodes) + ",";
+    res += to_string(optimal_length) + ",";
+    res += to_string(duration) + ",";
+    res += to_string(avg_h) + ",";
+    res += to_string(initial_h) + "\n";
+    printable_result = res;
+}
+
+void Result::print_result()
+{
+    get_result();
+    cout << printable_result;
+}
+
+void Result::write_result(std::string filename)
+{
+    get_result();
+    ofstream out_file;
+    out_file.open(filename, std::ios_base::app);
+    out_file << printable_result;
+    out_file.close();
+}
+
+void Result::set_h_initial(int new_h) { initial_h = new_h; }
+void Result::increase_h(int new_h) { total_h += new_h; counter++; }
+void Result::set_h_total(int new_h) { total_h = new_h; }
+#pragma endregion
