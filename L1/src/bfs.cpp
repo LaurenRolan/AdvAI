@@ -7,7 +7,7 @@ using namespace std;
 Result BFS::run(deque<char> s0, char puzzle_size)
 {
     Result result;
-    set<State> closed;
+    set<long long> closed;
     deque<Node> open;
     
     result.start_timer();
@@ -23,7 +23,7 @@ Result BFS::run(deque<char> s0, char puzzle_size)
 
     Node n0 = make_root_node(s0_state);
     open.push_back(n0);
-    closed.insert(s0_state);
+    closed.insert(s0_state.CompressedState);
     result.set_h_initial(n0.state.h);
 
     while(!open.empty())
@@ -43,14 +43,14 @@ Result BFS::run(deque<char> s0, char puzzle_size)
 
             if(is_goal(n_line.state, puzzle_size))
             {
-                result.set_optimal_lenght(n_line.g);
                 result.stop_timer();
+                result.set_optimal_lenght(n_line.g);
                 return result;
             }
 
-            if(closed.find(n_line.state) == closed.end())
+            if(closed.find(n_line.state.CompressedState) == closed.end())
             {
-                closed.insert(n_line.state);
+                closed.insert(n_line.state.CompressedState);
                 open.push_back(n_line);
             }
         };

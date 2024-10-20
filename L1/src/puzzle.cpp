@@ -90,12 +90,22 @@ State init(deque<char> s0, char puzzle_size)
     };
 }
 
+void print_state(deque<char> state)
+{
+	for(int i = 0; i < state.size(); i++)
+	{
+		cout << int(state[i]) << " ";
+	}
+	cout << "\n";
+}
+
 int get_index(deque<char> state, char target)
 {
     auto it = find(state.begin(), state.end(), target);
     if (it != state.end()) {
         return distance(state.begin(), it);
     } else {
+        print_state(state);
         std::cout << "target not found in the deque." << std::endl;
     }
     return -1;
@@ -143,19 +153,12 @@ vector<tuple<long long, char>> succ(Node parent, char previous_action, char puzz
     int blank_index = get_index(decompressed, 0);
     int swap_index;
 
-    // Se o blank não está na última linha e previous_action != 'u'
-    if((blank_index <= puzzle_size - width) and previous_action != 'u')
+    // Se o blank não está na linha do topo e previous_action != 'd'
+    if(blank_index >= width and previous_action != 'd')
     {
-        swap_index = blank_index + width;
+        swap_index = blank_index - width;
         long long compressed = compress_state(swap(decompressed, blank_index, swap_index), puzzle_size);
-        successors.push_back(make_tuple(compressed, 'd'));
-    }
-    // Se o blank não atingiu a margem direita e previous_action != 'l'
-    if((blank_index + 1) % width != 0 and previous_action != 'l')
-    {
-        swap_index = blank_index + 1;
-        long long compressed = compress_state(swap(decompressed, blank_index, swap_index), puzzle_size);
-        successors.push_back(make_tuple(compressed, 'r'));
+        successors.push_back(make_tuple(compressed, 'u'));
     }
     // Se o blank não está na margem esquerda e previous_action != 'r'
     if(blank_index % width != 0 and previous_action != 'r')
@@ -164,13 +167,21 @@ vector<tuple<long long, char>> succ(Node parent, char previous_action, char puzz
         long long compressed = compress_state(swap(decompressed, blank_index, swap_index), puzzle_size);
         successors.push_back(make_tuple(compressed, 'l'));
     }
-    // Se o blank não está na linha do topo e previous_action != 'd'
-    if(blank_index >= width and previous_action != 'd')
+    // Se o blank não atingiu a margem direita e previous_action != 'l'
+    if((blank_index + 1) % width != 0 and previous_action != 'l')
     {
-        swap_index = blank_index - width;
+        swap_index = blank_index + 1;
         long long compressed = compress_state(swap(decompressed, blank_index, swap_index), puzzle_size);
-        successors.push_back(make_tuple(compressed, 'u'));
+        successors.push_back(make_tuple(compressed, 'r'));
     }
+    // Se o blank não está na última linha e previous_action != 'u'
+    if((blank_index < (puzzle_size - width)) and previous_action != 'u')
+    {
+        swap_index = blank_index + width;
+        long long compressed = compress_state(swap(decompressed, blank_index, swap_index), puzzle_size);
+        successors.push_back(make_tuple(compressed, 'd'));
+    }
+
     return successors;
 }
 
