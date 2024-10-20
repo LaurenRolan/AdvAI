@@ -194,6 +194,12 @@ void Result::set_optimal_lenght(int lenght) { optimal_length = lenght; }
 
 void Result::get_result()
 {
+    if(optimal_length == -1)
+    {
+        printable_result = "-\n";
+        return;
+    }
+    
     avg_h = total_h/max(counter, 1);
     string res = "";
     res += to_string(expanded_nodes) + ",";

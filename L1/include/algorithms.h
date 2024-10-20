@@ -5,10 +5,23 @@
 #include <set>
 using namespace std;
 
-// Class defining the BFS-Graph algorithm and variables
-class BFS{
+// Abstract class
+class SearchAlgorithm {
     public:
-    Result run(deque<char> s0, char puzzle_size);
+    virtual ~SearchAlgorithm() {}
+    virtual Result run(deque<char> s0, char puzzle_size) = 0;
+};
+
+// Class defining the BFS-Graph algorithm
+class BFS : public SearchAlgorithm {
+    public:
+    Result run(deque<char> s0, char puzzle_size) override;
+};
+
+// Class defining the Greedy Best Fit Search algorithm
+class GBFS : public SearchAlgorithm {
+    public:
+    Result run(deque<char> s0, char puzzle_size) override;
 };
 
 #endif

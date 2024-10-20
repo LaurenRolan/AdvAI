@@ -64,6 +64,17 @@ struct Node
     }
 };
 
+struct CompareNode
+{
+    bool operator()(const Node& lhs, const Node& rhs) const
+    {
+        // Min-heap: return true if lhs should have lower priority than rhs
+        return lhs.state.h == rhs.state.h ?
+            lhs.state.h + lhs.g > rhs.state.h + rhs.g : //tie-break
+            lhs.state.h > rhs.state.h;
+    }
+};
+
 class Result
 {
 public:

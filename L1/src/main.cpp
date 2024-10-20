@@ -6,12 +6,11 @@
 #include <iostream>
 #include <cstddef>
 #include <deque>
+#include <memory>
 #include <vector>
 #include <set>
 
 using namespace std;
-
-void print_state(deque<char> state);
 
 // void print_state(deque<char> state)
 // {
@@ -31,10 +30,25 @@ int main(int argc, char* argv[])
 	if(puzzle_size == -1 || algorithm == Algorithm::a_NONE)
 		return 1;
 
+	std::unique_ptr<SearchAlgorithm> algo;
+	switch(algorithm)
+	{
+		case a_BFS:
+			algo  = std::make_unique<BFS>();
+			cout << "BFS\n";
+			break;
+		case a_GBFS:
+			algo  = std::make_unique<GBFS>();
+			cout << "GBFS\n";
+			break;
+		default:
+			cout << "None\n";
+			return -1;
+	}
+
 	for(int i = 0; i < s0_entries.size(); i++)
 	{
-		BFS algo;
-		Result result = algo.run(s0_entries[i], puzzle_size);
+		Result result = algo->run(s0_entries[i], puzzle_size);
 		result.print_result();
 	}
 	
