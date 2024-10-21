@@ -41,6 +41,10 @@ int main(int argc, char* argv[])
 			algo  = std::make_unique<GBFS>();
 			cout << "GBFS\n";
 			break;
+		case a_ASTAR:
+			algo  = std::make_unique<AStar>();
+			cout << "A*\n";
+			break;
 		default:
 			cout << "None\n";
 			return -1;

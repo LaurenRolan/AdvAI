@@ -23,4 +23,10 @@ class GBFS : public SearchAlgorithm {
     Result run(deque<char> s0, char puzzle_size) override;
 };
 
+// Class defining the A* algorithm
+class AStar : public SearchAlgorithm {
+    public:
+    Result run(deque<char> s0, char puzzle_size) override;
+};
+
 #endif
