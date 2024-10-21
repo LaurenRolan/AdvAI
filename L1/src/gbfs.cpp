@@ -3,14 +3,26 @@
 #include "../include/algorithms.h"
 #include <iostream>
 #include <queue>
-#include <unordered_map>
+#include <unordered_set>
 using namespace std;
+
+struct CompareGBFSNode
+{
+    bool operator()(const Node& lhs, const Node& rhs) const
+    {
+        // Min-heap: return true if lhs should have lower priority than rhs
+        return lhs.state.h == rhs.state.h ?
+            lhs.index < rhs.index : //tie-break: get the latest
+            lhs.state.h > rhs.state.h;
+    }
+};
 
 Result GBFS::run(deque<char> s0, char puzzle_size)
 {
     Result result;
-    set<long long> closed;
-    priority_queue<Node, deque<Node>, CompareNode> open;
+    unordered_set<long long> closed;
+    priority_queue<Node, vector<Node>, CompareGBFSNode> open;
+    int index = 0;
     
     result.start_timer();
     State s0_state = init(s0, puzzle_size);
@@ -26,7 +38,7 @@ Result GBFS::run(deque<char> s0, char puzzle_size)
 
         if(closed.find(n.state.CompressedState) == closed.end())
         {
-            closed.insert(n.state.CompressedState);
+            closed.insert(closed.begin(), n.state.CompressedState);
             if(is_goal(n.state, puzzle_size))
             {
                 result.stop_timer();
@@ -41,7 +53,7 @@ Result GBFS::run(deque<char> s0, char puzzle_size)
                 long long state = get<0>(successor);
                 char action = get<1>(successor);
                 
-                Node n_line = make_node(n.g, state, action, puzzle_size);
+                Node n_line = make_node(n.g, state, action, puzzle_size, ++index);
                 result.increase_generated();
                 result.increase_h(n_line.state.h);
                 open.push(n_line);

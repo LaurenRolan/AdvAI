@@ -76,7 +76,8 @@ Node make_root_node(State s0)
     return Node {
         s0,
         0,
-        'n'
+        'n',
+        0
     };
 }
 
@@ -123,7 +124,7 @@ deque<char> swap(deque<char> state, int index1, int index2)
 
 // Get node for a given set of <s, s', a>
 // Since s' can be derived from <s, a>, only those are passed.
-Node make_node(int cost, long long state, char action, char puzzle_size)
+Node make_node(int cost, long long state, char action, char puzzle_size, int index)
 {
     State s_line = {
         state,
@@ -133,7 +134,8 @@ Node make_node(int cost, long long state, char action, char puzzle_size)
     Node node = {
         s_line,
         cost + 1,
-        action
+        action,
+        index
     };
     return node;
 }

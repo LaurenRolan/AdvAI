@@ -28,51 +28,19 @@ struct State
 {
     long long CompressedState;
     int h;
-
-    friend bool operator==(const State& lhs, const State& rhs)
-    {
-        return lhs.CompressedState == rhs.CompressedState;
-    }
-    
-    friend bool operator<(const State& lhs, const State& rhs)
-    {
-        return lhs.h < rhs.h;
-    }
-
 };
 
 // Node struct
 // state -> state struct
 // g -> path cost until this node
 // action -> action that took us to this new state
+// index -> order of node creation
 struct Node
 {
     State state;
     int g;
     char action;
-
-    friend bool operator==(const Node& lhs, const Node& rhs)
-    {
-        return lhs.state == rhs.state and
-            lhs.g == rhs.g and
-            lhs.action == rhs.action;
-    }
-
-    friend bool operator<(const Node& lhs, const Node& rhs)
-    {
-        return lhs.state.h + lhs.g < rhs.state.h + rhs.g;
-    }
-};
-
-struct CompareNode
-{
-    bool operator()(const Node& lhs, const Node& rhs) const
-    {
-        // Min-heap: return true if lhs should have lower priority than rhs
-        return lhs.state.h == rhs.state.h ?
-            lhs.state.h + lhs.g > rhs.state.h + rhs.g : //tie-break
-            lhs.state.h > rhs.state.h;
-    }
+    int index;
 };
 
 class Result
@@ -118,7 +86,7 @@ char get_h(std::deque<char> state, char puzzle_size);
 Node make_root_node(State s0);
 
 // Get node for a given set of <n, a, s'>
-Node make_node(int cost, long long state, char action, char puzzle_size);
+Node make_node(int cost, long long state, char action, char puzzle_size, int index);
 
 // Get the initial state
 State init(std::deque<char> state_0, char puzzle_size);

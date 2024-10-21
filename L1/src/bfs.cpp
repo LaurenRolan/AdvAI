@@ -2,12 +2,13 @@
 #include "../include/puzzle.h"
 #include "../include/algorithms.h"
 #include <iostream>
+#include <unordered_set>
 using namespace std;
 
 Result BFS::run(deque<char> s0, char puzzle_size)
 {
     Result result;
-    set<long long> closed;
+    unordered_set<long long> closed;
     deque<Node> open;
     
     result.start_timer();
@@ -38,7 +39,7 @@ Result BFS::run(deque<char> s0, char puzzle_size)
             long long state = get<0>(successor);
             char action = get<1>(successor);
             
-            Node n_line = make_node(n.g, state, action, puzzle_size);
+            Node n_line = make_node(n.g, state, action, puzzle_size, 0);
             result.increase_generated();
 
             if(is_goal(n_line.state, puzzle_size))

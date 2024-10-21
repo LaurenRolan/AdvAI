@@ -2,7 +2,6 @@
 #define ALGORITHMS_H
 
 #include "../include/puzzle.h"
-#include <set>
 using namespace std;
 
 // Abstract class
