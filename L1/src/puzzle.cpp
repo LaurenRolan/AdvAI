@@ -52,7 +52,7 @@ char get_h(deque<char> state, char puzzle_size)
     {
         char val = state[i];
         if(val != 0)
-            distance += abs(val % 3 - i % 3) + abs(floor(val / 3) - floor(i / 3));
+            distance += abs(val % width - i % width) + abs(floor(val / width) - floor(i / width));
     }
     return distance;
 }
