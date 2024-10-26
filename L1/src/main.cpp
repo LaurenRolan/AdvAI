@@ -45,6 +45,10 @@ int main(int argc, char* argv[])
 			algo  = std::make_unique<AStar>();
 			cout << "A*\n";
 			break;
+		case a_IDASTAR:
+			algo  = std::make_unique<IDAStar>();
+			cout << "IDA*\n";
+			break;
 		default:
 			cout << "None\n";
 			return -1;

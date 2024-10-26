@@ -29,4 +29,10 @@ class AStar : public SearchAlgorithm {
     Result run(deque<char> s0, char puzzle_size) override;
 };
 
+// Class defining the IDA* algorithm
+class IDAStar : public SearchAlgorithm {
+    public:
+    Result run(deque<char> s0, char puzzle_size) override;
+};
+
 #endif
