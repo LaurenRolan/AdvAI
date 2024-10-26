@@ -10,10 +10,14 @@ struct CompareGBFSNode
 {
     bool operator()(const Node& lhs, const Node& rhs) const
     {
-        // Min-heap: return true if lhs should have lower priority than rhs
-        return lhs.state.h == rhs.state.h ?
-            lhs.index < rhs.index : //tie-break: get the latest
-            lhs.state.h > rhs.state.h;
+        // P0: min f (=h)
+        if(lhs.state.h != rhs.state.h)
+            return  lhs.state.h > rhs.state.h;
+        // P1: max g
+        if(lhs.g != rhs.g)
+            return lhs.g < rhs.g;
+        // P2: max index (LIFO)
+        return lhs.state.h < rhs.state.h;
     }
 };
 
