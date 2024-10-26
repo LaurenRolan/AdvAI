@@ -6,21 +6,6 @@
 #include <unordered_set>
 using namespace std;
 
-struct CompareAStarNode
-{
-    bool operator()(const Node& lhs, const Node& rhs) const
-    {
-        // P0 : min f (= h + g)
-        if(lhs.state.h + lhs.g != rhs.state.h + rhs.g)
-            return lhs.state.h + lhs.g > rhs.state.h + rhs.g;
-        // P1 : min h 
-        if(lhs.state.h != rhs.state.h)
-            return lhs.state.h > rhs.state.h;
-        //P2 : max index (LIFO)
-        return lhs.index < rhs.index;
-    }
-};
-
 Result AStar::run(deque<char> s0, char puzzle_size)
 {
     Result result;
