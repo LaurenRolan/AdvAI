@@ -17,7 +17,7 @@ struct CompareGBFSNode
         if(lhs.g != rhs.g)
             return lhs.g < rhs.g;
         // P2: max index (LIFO)
-        return lhs.state.h < rhs.state.h;
+        return lhs.index < rhs.index;
     }
 };
 
