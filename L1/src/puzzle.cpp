@@ -77,6 +77,7 @@ Node make_root_node(State s0)
         s0,
         0,
         'n',
+        0,
         0
     };
 }

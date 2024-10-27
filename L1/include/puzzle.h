@@ -41,6 +41,7 @@ struct Node
     int g;
     char action;
     int index;
+    short depth;
 };
 
 class Result
