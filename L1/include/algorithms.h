@@ -29,4 +29,10 @@ class AStar : public SearchAlgorithm {
     Result run(deque<char> s0, char puzzle_size) override;
 };
 
+// Class defining the IDFS algorithm
+class IDFS : public SearchAlgorithm {
+    public:
+    Result run(deque<char> s0, char puzzle_size) override;
+};
+
 #endif

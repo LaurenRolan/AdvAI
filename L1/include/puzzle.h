@@ -56,6 +56,7 @@ public:
   void set_h_initial(int new_h);
   void increase_h(int new_h);
   void set_h_total(int new_h);
+  short get_optimal_length();
 
 private:
   int expanded_nodes = 0;

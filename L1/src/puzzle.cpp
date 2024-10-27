@@ -230,4 +230,5 @@ void Result::write_result(std::string filename)
 void Result::set_h_initial(int new_h) { initial_h = new_h; }
 void Result::increase_h(int new_h) { total_h += new_h; counter++; }
 void Result::set_h_total(int new_h) { total_h = new_h; }
+short Result::get_optimal_length() { return optimal_length; }
 #pragma endregion
