@@ -90,6 +90,9 @@ Node make_root_node(State s0);
 // Get node for a given set of <n, a, s'>
 Node make_node(int cost, long long state, char action, char puzzle_size, int index);
 
+// Get node for a given set of <n, a, s'> with depth set as well
+Node make_node_with_depth(int cost, long long state, char action, char puzzle_size, int index, short depth);
+
 // Get the initial state
 State init(std::deque<char> state_0, char puzzle_size);
 

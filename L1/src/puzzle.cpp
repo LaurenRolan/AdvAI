@@ -136,7 +136,25 @@ Node make_node(int cost, long long state, char action, char puzzle_size, int ind
         s_line,
         cost + 1,
         action,
-        index
+        index,
+    };
+    return node;
+}
+
+// Sets node depth as well - necessary for IDFS
+Node make_node_with_depth(int cost, long long state, char action, char puzzle_size, int index, short depth)
+{
+    State s_line = {
+        state,
+        get_h(decompress_state(state, puzzle_size), puzzle_size)
+    };
+
+    Node node = {
+        s_line,
+        cost + 1,
+        action,
+        index,
+        depth
     };
     return node;
 }

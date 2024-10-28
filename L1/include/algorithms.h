@@ -2,6 +2,7 @@
 #define ALGORITHMS_H
 
 #include "../include/puzzle.h"
+#include "set"
 using namespace std;
 
 // Abstract class
@@ -33,6 +34,9 @@ class AStar : public SearchAlgorithm {
 class IDFS : public SearchAlgorithm {
     public:
     Result run(deque<char> s0, char puzzle_size) override;
+    
+    private:
+    bool depth_limited_search(Node n, char puzzle_size, char max_depth, Result &result, set<long long> &closed);
 };
 
 #endif
