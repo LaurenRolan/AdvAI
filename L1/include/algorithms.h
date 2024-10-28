@@ -33,6 +33,8 @@ class AStar : public SearchAlgorithm {
 class IDAStar : public SearchAlgorithm {
     public:
     Result run(deque<char> s0, char puzzle_size) override;
+    private:
+    tuple<int, bool> recursive_search(Node n0, int f_limit, Result& result);
 };
 
 struct CompareAStarNode
