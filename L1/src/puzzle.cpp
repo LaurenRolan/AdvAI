@@ -193,8 +193,8 @@ vector<tuple<long long, char>> succ(Node parent, char previous_action, char puzz
 }
 
 #pragma region ResultManagement
-void Result::start_timer() { start_time = clock(); }
-void Result::stop_timer() { duration = float(clock() - start_time)/CLOCKS_PER_SEC; }
+void Result::start_timer() { start_time = chrono::high_resolution_clock::now(); }
+void Result::stop_timer() { duration = chrono::duration_cast<chrono::duration<float>>(chrono::high_resolution_clock::now() - start_time).count(); }
 void Result::increase_expanded() { expanded_nodes++; }
 void Result::increase_generated() { generated_nodes++; }
 void Result::set_optimal_lenght(int lenght) { optimal_length = lenght; }

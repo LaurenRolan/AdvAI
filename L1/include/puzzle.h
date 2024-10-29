@@ -7,6 +7,7 @@
 #include <tuple>
 #include <string>
 #include <iostream>
+#include <chrono>
 
 const long long GOAL_N_15 = 81985529216486895; // 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111
 const long long GOAL_N_8 = 305419896; // 0001 0010 0011 0100 0101 0110 0111 1000
@@ -66,7 +67,7 @@ private:
   double avg_h;
   short initial_h;
   double total_h = 0;
-  clock_t start_time;
+  std::chrono::time_point<std::chrono::system_clock> start_time;
   std::string printable_result;
   void get_result();
 };
