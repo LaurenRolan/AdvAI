@@ -12,14 +12,6 @@
 
 using namespace std;
 
-// void print_state(deque<char> state)
-// {
-// 	for(int i = 0; i < state.size(); i++)
-// 	{
-// 		cout << int(state[i]) << " ";
-// 	}
-// 	cout << "\n";
-// }
 
 int main(int argc, char* argv[])
 {

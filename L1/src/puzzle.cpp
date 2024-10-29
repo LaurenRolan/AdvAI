@@ -100,6 +100,11 @@ void print_state(deque<char> state)
 	cout << "\n";
 }
 
+void print_state(long long state, char puzzle_size)
+{
+	print_state(decompress_state(state, puzzle_size));
+}
+
 int get_index(deque<char> state, char target)
 {
     auto it = find(state.begin(), state.end(), target);
