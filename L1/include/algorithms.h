@@ -36,7 +36,7 @@ class IDFS : public SearchAlgorithm {
     Result run(deque<char> s0, char puzzle_size) override;
     
     private:
-    bool depth_limited_search(Node n, char puzzle_size, char max_depth, Result &result, set<long long> &closed);
+    bool depth_limited_search(Node n, char puzzle_size, char max_depth, Result &result);
 };
 
 #endif
