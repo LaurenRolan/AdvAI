@@ -13,4 +13,10 @@ Algorithm get_algorithm(int argc, char* argv[]);
 // Get a list of initial states, coded as char lists of size puzzle_size
 std::deque<std::deque<char>> get_s0_entries(int argc, char* argv[], char puzzle_size);
 
+// Print the state given the decompressed representation.
+void print_state(std::deque<char> state);
+
+// Print the state given the compressed representation.
+void print_state(long long state, char puzzle_size);
+
 #endif

@@ -12,14 +12,6 @@
 
 using namespace std;
 
-// void print_state(deque<char> state)
-// {
-// 	for(int i = 0; i < state.size(); i++)
-// 	{
-// 		cout << int(state[i]) << " ";
-// 	}
-// 	cout << "\n";
-// }
 
 int main(int argc, char* argv[])
 {
@@ -35,15 +27,15 @@ int main(int argc, char* argv[])
 	{
 		case a_BFS:
 			algo  = std::make_unique<BFS>();
-			cout << "BFS\n";
 			break;
 		case a_GBFS:
 			algo  = std::make_unique<GBFS>();
-			cout << "GBFS\n";
 			break;
 		case a_ASTAR:
 			algo  = std::make_unique<AStar>();
-			cout << "A*\n";
+			break;
+		case a_IDASTAR:
+			algo  = std::make_unique<IDAStar>();
 			break;
 		case a_IDFS:
 			algo  = std::make_unique<IDFS>();
