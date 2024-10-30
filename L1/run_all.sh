@@ -1,7 +1,7 @@
 #!/bin/bash
 
 input_file="8puzzle_instances.txt"
-algorithms=("bfs" "gbfs" "astar" "idastar")
+algorithms=("bfs" "gbfs" "astar" "idastar" "idfs")
 
 
 # Loop through each algorithm

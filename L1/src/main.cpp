@@ -39,7 +39,6 @@ int main(int argc, char* argv[])
 			break;
 		case a_IDFS:
 			algo  = std::make_unique<IDFS>();
-			cout << "IDFS\n";
 			break;
 		default:
 			cout << "None\n";

@@ -77,7 +77,6 @@ Node make_root_node(State s0)
         s0,
         0,
         'n',
-        0,
         0
     };
 }
@@ -158,8 +157,7 @@ Node make_node_with_depth(int cost, long long state, char action, char puzzle_si
         s_line,
         cost + 1,
         action,
-        index,
-        depth
+        index
     };
     return node;
 }
