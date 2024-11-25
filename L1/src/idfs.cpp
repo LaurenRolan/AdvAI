@@ -1,3 +1,5 @@
+// Implementação do algoritmo IDFS
+
 #include "../include/algorithms.h"
 #include <set>
 #include <deque>

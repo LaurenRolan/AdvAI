@@ -1,3 +1,4 @@
+// Implementação dos métodos de leitura e parsing da entrada
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>

@@ -23,8 +23,8 @@ enum Algorithm
 };
 
 // State struct
-// CompressedState -> 8 bytes indicating the compressed state info
-// h -> heuristic value for this state (dist. Manhattan)
+// CompressedState -> 8 bytes que indicam a informação comprimida do estado
+// h -> valor da heurística para este estado (dist. Manhattan)
 struct State
 {
     long long CompressedState;
@@ -33,9 +33,9 @@ struct State
 
 // Node struct
 // state -> state struct
-// g -> path cost until this node
-// action -> action that took us to this new state
-// index -> order of node creation
+// g -> custo do caminho até este nodo
+// action -> ação que nos trouxe a este nodo
+// index -> ordem de criação do nodo
 struct Node
 {
     State state;
@@ -74,32 +74,56 @@ private:
 };
 
 #pragma region StateManagement
-// Given a vector of chars representing the decompressed state, returns a long long.
+// Dado um estado descomprimido, retorna a versão comprimida.
+// state -> lista de tamanho N indicando a posição de cada célula no grid
+// puzzle_size -> tamanho do puzzle atual (9 para o 8-puzzle, 16 para o 15-puzzle)
+// Returns: long long com o estado comprimido
 long long compress_state(std::deque<char> state, char puzzle_size);
 
-// Given a long long representation of a compressed state, returns a vector of chars.
+// Dado um estado comprimido, retorna a versão descomprimida.
+// state -> long long com a versão comprimida do estado
+// puzzle_size -> tamanho do puzzle atual (9 para o 8-puzzle, 16 para o 15-puzzle)
+// Returns: deque<char> com o estado descomprimido
 std::deque<char> decompress_state(long long state, char puzzle_size);
 
-// Calculates the Manhattan distance for a given state
+// Calcula a distância de Manhattan para um dado estado
+// state -> lista de tamanho N indicando a posição de cada célula no grid
+// puzzle_size -> tamanho do puzzle atual (9 para o 8-puzzle, 16 para o 15-puzzle)
+// Returns: char com o valor da distância
 char get_h(std::deque<char> state, char puzzle_size);
 #pragma endregion
 
-// Get root node for a given initial state
+// Cria o nodo raiz, dado um estado inicial
+// s0 -> struct do tipo State, representando o estado inicial
+// Returns: struct Node
 Node make_root_node(State s0);
 
-// Get node for a given set of <n, a, s'>
+// Cria um nodo dado o pai, ação que levou até este nodo, e o estado deste nodo.
+// cost -> parent.g, custo do pai
+// state -> versão comprimida do estado do nodo
+// action -> ação que levou a este nodo
+// puzzle_size -> tamanho do puzzle atual (9 para o 8-puzzle, 16 para o 15-puzzle)
+// index -> ordem de criação do nodo
+// Returns: struct Node
 Node make_node(int cost, long long state, char action, char puzzle_size, int index);
 
-// Get node for a given set of <n, a, s'> with depth set as well
-Node make_node_with_depth(int cost, long long state, char action, char puzzle_size, int index, short depth);
-
-// Get the initial state
+// Retorna o estado inicial
+// state_0 - > versão descomprimida do estado inicial
+// puzzle_size -> tamanho do puzzle atual (9 para o 8-puzzle, 16 para o 15-puzzle)
+// Returns: struct State
 State init(std::deque<char> state_0, char puzzle_size);
 
-// Check if the state is a goal state for a given puzzle_size
+// Verifica se o estado é objetivo, dado o tamanho do puzzle
+// state -> struct State com o estado atual
+// puzzle_size -> tamanho do puzzle atual (9 para o 8-puzzle, 16 para o 15-puzzle)
+// Returns: True se é objetivo, False caso contrário
 bool is_goal(State state, char puzzle_size);
 
-// Get the successors <compressed_state, action> for a given node and puzzle_size
+// Gera os sucessores de um estado dado o nodo atual e o tamanho do puzzle, evitando gerar o próprio pai
+// parent -> nodo pai
+// previous_action -> ação anterior ('u', 'd', 'l', 'r')
+// puzzle_size -> tamanho do puzzle atual (9 para o 8-puzzle, 16 para o 15-puzzle)
+// Returns: tupla com o próximo estado e ação que levou a ele
 std::vector<std::tuple<long long, char>> succ(Node parent, char previous_action, char puzzle_size);
 
 #endif

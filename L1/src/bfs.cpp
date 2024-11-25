@@ -1,3 +1,4 @@
+// Implementação do algoritmo BFS
 #include "../include/utils.h"
 #include "../include/puzzle.h"
 #include "../include/algorithms.h"

@@ -12,25 +12,25 @@ class SearchAlgorithm {
     virtual Result run(deque<char> s0, char puzzle_size) = 0;
 };
 
-// Class defining the BFS-Graph algorithm
+// Definição do algorimo BFS
 class BFS : public SearchAlgorithm {
     public:
     Result run(deque<char> s0, char puzzle_size) override;
 };
 
-// Class defining the Greedy Best Fit Search algorithm
+// Definição do algorimo Greedy Best Fit Search
 class GBFS : public SearchAlgorithm {
     public:
     Result run(deque<char> s0, char puzzle_size) override;
 };
 
-// Class defining the A* algorithm
+// Definição do algorimo A*
 class AStar : public SearchAlgorithm {
     public:
     Result run(deque<char> s0, char puzzle_size) override;
 };
 
-// Class defining the IDFS algorithm
+// Definição do algorimo IDFS
 class IDFS : public SearchAlgorithm {
     public:
     Result run(deque<char> s0, char puzzle_size) override;
@@ -39,7 +39,7 @@ class IDFS : public SearchAlgorithm {
     bool depth_limited_search(Node n, char puzzle_size, int max_depth, Result &result);
 };
 
-// Class defining the IDA* algorithm
+// Definição do algorimo IDA*
 class IDAStar : public SearchAlgorithm {
     public:
     Result run(deque<char> s0, char puzzle_size) override;

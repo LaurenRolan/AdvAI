@@ -4,19 +4,21 @@
 
 int main(int argc, char* argv[]);
 
-// Get the puzzle size (9 or 16)
+// Retorna o tamanho do puzzle (9 para o 8-puzzle, 16 para o 15-puzzle)
 int get_puzzle_size(int argc, char* argv[]);
 
-// Get the algorithm name (bfs, astar, idastar, etc)
+// Retorna o nome do algoritmo (astar, bfs, gbfs, idastar, idfs) 
 Algorithm get_algorithm(int argc, char* argv[]);
 
-// Get a list of initial states, coded as char lists of size puzzle_size
+// Retorna uma lista de estados inicial descompactados
 std::deque<std::deque<char>> get_s0_entries(int argc, char* argv[], char puzzle_size);
 
-// Print the state given the decompressed representation.
+// Imprime um estado, dado sua versão descomprimida.
+// Usado apenas para debug.
 void print_state(std::deque<char> state);
 
-// Print the state given the compressed representation.
+// Imprime um estado, dado sua versão comprimida.
+// Usado apenas para debug.
 void print_state(long long state, char puzzle_size);
 
 #endif

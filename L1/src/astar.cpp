@@ -1,3 +1,5 @@
+// Implementação do algoritmo A*
+
 #include "../include/utils.h"
 #include "../include/puzzle.h"
 #include "../include/algorithms.h"
