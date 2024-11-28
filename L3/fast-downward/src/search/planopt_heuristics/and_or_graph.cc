@@ -73,6 +73,27 @@ void AndOrGraph::most_conservative_valuation() {
       TODO: add your code for exercise 2 (a) here. Ignore the members
       direct_cost, additive_cost, and achiever for now.
     */
+   while (!queue.empty())
+   {
+        auto current_node_id = queue.front();
+        queue.pop_front();
+        nodes[current_node_id].forced_true = true;
+        auto current_node = get_node(current_node_id);
+        auto pred_ids = current_node.predecessor_ids;
+        for(auto pred_id : pred_ids)
+        {
+            nodes[pred_id].num_forced_successors++;
+            auto pred_node = get_node(pred_id);
+            if(pred_node.type == NodeType::OR && !pred_node.forced_true)
+            {
+                queue.push_back(pred_node.id);
+            }
+            else if(pred_node.successor_ids.size() == pred_node.num_forced_successors && !pred_node.forced_true)
+            {
+                queue.push_back(pred_node.id);
+            }
+        }
+   }
 }
 
 void AndOrGraph::weighted_most_conservative_valuation() {
