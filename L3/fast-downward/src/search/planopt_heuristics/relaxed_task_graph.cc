@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <vector>
+#include "../task_utils/task_properties.h"
+
 
 using namespace std;
 
@@ -17,6 +19,50 @@ RelaxedTaskGraph::RelaxedTaskGraph(const TaskProxy &task_proxy)
         - the graph should contain precondition and effect nodes for all operators
         - the graph should contain all necessary edges.
     */
+    task_properties::verify_no_axioms(task_proxy);
+    task_properties::verify_no_conditional_effects(task_proxy);
+
+    // Set variables
+    int id = 0;
+    for(auto prop : relaxed_task.propositions)
+    {
+        NodeID node_id = graph.add_node(NodeType::OR, 0);
+        variable_node_ids[id] = prop.id;
+    }
+
+    // Set inital node id and point init variables to it
+    initial_node_id = graph.add_node(NodeType::AND);
+    for(auto prop_id : relaxed_task.initial_state)
+    {
+        graph.add_edge(prop_id, initial_node_id);
+    }
+
+    // Set goal node id and point it to goal propositions
+    goal_node_id = graph.add_node(NodeType::AND);
+    for(auto prop_id : relaxed_task.goal)
+    {
+        graph.add_edge(goal_node_id, prop_id);
+    }
+
+    // Get operators and build the rest of the graph
+    for(auto op : relaxed_task.operators)
+    {
+        NodeID op_effect_id = graph.add_node(NodeType::AND, op.cost);
+        NodeID op_formula_id = graph.add_node(NodeType::AND, 0);
+        auto preconditions = op.preconditions;
+        for(int p = 0; p < preconditions.size(); p++)
+        {
+            auto precond_id = preconditions[p];
+            graph.add_edge(op_formula_id, precond_id);
+        }
+        graph.add_edge(op_effect_id, op_formula_id);
+        auto effects = op.effects;
+        for(int e = 0; e < effects.size(); e++)
+        {
+            auto effect_id = effects[e];
+            graph.add_edge(effect_id, op_effect_id);
+        }
+    }
 }
 
 void RelaxedTaskGraph::change_initial_state(const GlobalState &global_state) {

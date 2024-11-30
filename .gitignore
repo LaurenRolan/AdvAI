@@ -2,3 +2,6 @@
 .vs
 .vscode
 *.txt
+L3/fast-downward/builds/
+L3/fast-downward/driver/
+L3/sas_plan
