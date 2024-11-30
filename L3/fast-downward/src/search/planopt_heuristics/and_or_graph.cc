@@ -6,6 +6,7 @@
 #include <deque>
 #include <iostream>
 #include <queue>
+#include <numeric> 
 #include <limits> 
 
 using namespace std;
@@ -96,6 +97,15 @@ void AndOrGraph::most_conservative_valuation() {
    }
 }
 
+struct WeightedQueueCompare
+    {
+        bool operator()(const AndOrGraphNode &lhs, const AndOrGraphNode &rhs) const
+        {
+            return lhs.additive_cost > rhs.additive_cost;
+        }
+    };
+
+
 void AndOrGraph::weighted_most_conservative_valuation() {
     /*
       General approach for computing the weighted most conservative valuation:
@@ -123,6 +133,55 @@ void AndOrGraph::weighted_most_conservative_valuation() {
     /*
       TODO: add your code for exercise 2 (c) here.
     */
+
+    auto queue = priority_queue<NodeID, vector<AndOrGraphNode>, WeightedQueueCompare>();
+
+    for (AndOrGraphNode &node : nodes) {
+        node.forced_true = false;
+        node.num_forced_successors = 0;
+        if (node.type == NodeType::AND && node.successor_ids.empty()) {
+            node.additive_cost = 0;
+            queue.emplace(node);
+        }
+        else {
+            node.additive_cost = numeric_limits<int>::max(); // == "infinity" for int
+        }
+    }
+
+   while (!queue.empty())
+   {
+        auto current_node = queue.top();
+        queue.pop();
+        nodes[current_node.id].forced_true = true;
+        auto pred_ids = current_node.predecessor_ids;
+        for(auto pred_id : pred_ids)
+        {
+            nodes[pred_id].num_forced_successors++;
+            auto pred_node = get_node(pred_id);
+            if(pred_node.type == NodeType::OR && !pred_node.forced_true)
+            {
+                int new_cost = current_node.additive_cost + pred_node.direct_cost;
+                if(pred_node.additive_cost > new_cost)
+                {
+                    pred_node.additive_cost = new_cost;
+                    queue.emplace(pred_node);
+                    pred_node.achiever = current_node.id;
+                }
+            }
+            else if(pred_node.successor_ids.size() == pred_node.num_forced_successors && !pred_node.forced_true)
+            {
+                pred_node.additive_cost = accumulate(
+                    pred_node.predecessor_ids.begin(),
+                    pred_node.predecessor_ids.end(),
+                    pred_node.direct_cost,
+                    [&] (int acc, const NodeID& n_id) {
+                        return get_node(n_id).additive_cost + acc;
+                    }
+                );
+                queue.emplace(pred_node);
+            }
+        }
+   }
 }
 
 void add_nodes(vector<string> names, NodeType type, AndOrGraph &g, unordered_map<string, NodeID> &ids) {
