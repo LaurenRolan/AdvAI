@@ -2,3 +2,7 @@
 .vs
 .vscode
 *.txt
+L3/fast-downward/driver/__pycache__/*
+L3/fast-downward/builds/*
+L4/fast-downward/driver/__pycache__/*
+L4/fast-downward/builds/*
