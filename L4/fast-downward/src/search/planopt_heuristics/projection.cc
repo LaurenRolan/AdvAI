@@ -52,7 +52,15 @@ Projection::Projection(const TNFTask &task, const Pattern &pattern)
     // TODO: add your code for exercise (a) here.
     for(auto op : task.operators)
     {
-        //TODO
+        vector<TNFOperatorEntry> entries;
+        for(auto entry: op.entries)
+        {
+            auto variable = variable_mapping[entry.variable_id];
+            if(variable == -1) continue;
+            entries.emplace_back(variable, entry.precondition_value, entry.effect_value);
+        }
+        if(entries.empty()) continue;
+        projected_task.operators.push_back(TNFOperator(entries, op.cost, op.name));
     }
 }
 
