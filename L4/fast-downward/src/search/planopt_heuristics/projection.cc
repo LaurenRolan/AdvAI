@@ -60,7 +60,7 @@ Projection::Projection(const TNFTask &task, const Pattern &pattern)
             entries.emplace_back(variable, entry.precondition_value, entry.effect_value);
         }
         if(entries.empty()) continue;
-        projected_task.operators.push_back(TNFOperator(entries, op.cost, op.name));
+        projected_task.operators.emplace_back(entries, op.cost, op.name);
     }
 }
 

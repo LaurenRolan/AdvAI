@@ -15,6 +15,8 @@ namespace planopt_heuristics {
 */
 using QueueEntry = pair<int, int>;
 
+void print_state(TNFState state);
+
 PatternDatabase::PatternDatabase(const TNFTask &task, const Pattern &pattern)
     : projection(task, pattern) {
     /*
@@ -45,6 +47,50 @@ PatternDatabase::PatternDatabase(const TNFTask &task, const Pattern &pattern)
     queue.push({0, projection.rank_state(projected_task.goal_state)});
 
     // TODO: add your code for exercise (b) here.
+    while(!queue.empty())
+    {
+      auto entry = queue.top();
+      queue.pop();
+      if(find(distances.begin(), distances.end(), entry.second) == distances.end())
+      {
+        TNFState state = projection.unrank_state(entry.second);
+        if(projected_task.initial_state == state)
+        {
+          return;
+        }
+        for(auto op : projected_task.operators)
+        {
+          bool is_applicable = true;
+          TNFState next_state(state.size(), -1);
+          for(int i = 0; i < op.entries.size(); i++)
+          {
+            int id = op.entries[i].variable_id;
+            if(state[id] != op.entries[i].effect_value)
+            {
+              is_applicable = false;
+              break;
+            }
+            next_state[id] = op.entries[i].precondition_value;
+          }
+          if(is_applicable && !equal(state.begin(), state.end(), next_state.begin()))
+          {
+            int index = projection.rank_state(next_state);
+            int distance = op.cost + entry.first;
+            distances[index] = distance;
+            queue.push({distance, index});
+          }
+        }
+      }
+    }
+}
+
+void print_state(TNFState state)
+{
+  for(int var: state)
+  {
+    cout << var << " ";
+  }
+  cout << endl;
 }
 
 int PatternDatabase::lookup_distance(const TNFState &original_state) const {
