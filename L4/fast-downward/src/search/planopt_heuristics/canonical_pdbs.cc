@@ -1,7 +1,8 @@
 #include "canonical_pdbs.h"
 
 #include "../algorithms/max_cliques.h"
-#include <limits> 
+#include <limits>
+#include <ranges>
 
 using namespace std;
 
@@ -30,6 +31,30 @@ vector<vector<int>> build_compatibility_graph(const vector<Pattern> &patterns, c
     vector<vector<int>> graph(patterns.size());
 
     // TODO: add your code for exercise (d) here.
+
+    // Para cada operador, verifica quais patterns são afetados
+    for(auto op : task.operators)
+    {
+        vector<int> affected_patterns_by_op;
+        for(int i = 0; i < (int) patterns.size(); i++)
+        {
+            if(affects_pattern(op, patterns[i]))
+                affected_patterns_by_op.push_back(i);
+        }
+
+        // Para cada grupo de patterns afetados, cria ligações.
+        for(int pattern_id : affected_patterns_by_op)
+        {
+            for_each(affected_patterns_by_op.begin(), affected_patterns_by_op.end(),
+                [&graph, patterns, pattern_id](int other_pattern_id){
+                if(pattern_id != other_pattern_id)
+                {
+                    graph[pattern_id].push_back(other_pattern_id);
+                    graph[other_pattern_id].push_back(pattern_id);
+                }
+            });
+        }
+    }
 
     return graph;
 }
@@ -73,6 +98,18 @@ int CanonicalPatternDatabases::compute_heuristic(const TNFState &original_state)
        int h = 0;
 
        // TODO: add your code for exercise (d) here.
+       for(auto max_clique : maximal_additive_sets)
+       {
+            int h_clique = 0;
+            for(int i = 0; i < max_clique.size(); i++)
+            {
+                h_clique += heuristic_values[i];
+            }
+            if(h < h_clique)
+            {
+                h = h_clique;
+            }
+       }
 
        return h;
 }

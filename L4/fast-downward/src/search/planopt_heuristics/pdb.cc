@@ -51,17 +51,14 @@ PatternDatabase::PatternDatabase(const TNFTask &task, const Pattern &pattern)
     {
       auto entry = queue.top();
       queue.pop();
-      if(find(distances.begin(), distances.end(), entry.second) == distances.end())
+      if(distances[entry.second] > entry.first)
       {
+        distances[entry.second] = entry.first;
         TNFState state = projection.unrank_state(entry.second);
-        if(projected_task.initial_state == state)
-        {
-          return;
-        }
         for(auto op : projected_task.operators)
         {
           bool is_applicable = true;
-          TNFState next_state(state.size(), -1);
+          TNFState next_state(state);
           for(int i = 0; i < op.entries.size(); i++)
           {
             int id = op.entries[i].variable_id;
@@ -72,25 +69,16 @@ PatternDatabase::PatternDatabase(const TNFTask &task, const Pattern &pattern)
             }
             next_state[id] = op.entries[i].precondition_value;
           }
-          if(is_applicable && !equal(state.begin(), state.end(), next_state.begin()))
+          if(is_applicable)
           {
             int index = projection.rank_state(next_state);
             int distance = op.cost + entry.first;
-            distances[index] = distance;
-            queue.push({distance, index});
+            if(distances[index] > distance)
+              queue.push({distance, index});
           }
         }
       }
     }
-}
-
-void print_state(TNFState state)
-{
-  for(int var: state)
-  {
-    cout << var << " ";
-  }
-  cout << endl;
 }
 
 int PatternDatabase::lookup_distance(const TNFState &original_state) const {
