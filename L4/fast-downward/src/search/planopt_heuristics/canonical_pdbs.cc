@@ -36,23 +36,23 @@ vector<vector<int>> build_compatibility_graph(const vector<Pattern> &patterns, c
     for(auto op : task.operators)
     {
         vector<int> affected_patterns_by_op;
+        vector<int> non_affected_patterns_by_op;
         for(int i = 0; i < (int) patterns.size(); i++)
         {
             if(affects_pattern(op, patterns[i]))
                 affected_patterns_by_op.push_back(i);
+            else
+                non_affected_patterns_by_op.push_back(i);
         }
 
-        // Para cada grupo de patterns afetados, cria ligações.
+        // Para cada par de pattern afetado e não afetado, cria ligações.
         for(int pattern_id : affected_patterns_by_op)
         {
-            for_each(affected_patterns_by_op.begin(), affected_patterns_by_op.end(),
-                [&graph, patterns, pattern_id](int other_pattern_id){
-                if(pattern_id != other_pattern_id)
-                {
-                    graph[pattern_id].push_back(other_pattern_id);
-                    graph[other_pattern_id].push_back(pattern_id);
-                }
-            });
+            for(int other_pattern_id : non_affected_patterns_by_op)
+            {
+                graph[pattern_id].push_back(other_pattern_id);
+                graph[other_pattern_id].push_back(pattern_id);
+            }
         }
     }
 
@@ -103,7 +103,8 @@ int CanonicalPatternDatabases::compute_heuristic(const TNFState &original_state)
             int h_clique = 0;
             for(int i = 0; i < max_clique.size(); i++)
             {
-                h_clique += heuristic_values[i];
+                int id = max_clique[i];
+                h_clique += heuristic_values[id];
             }
             if(h < h_clique)
             {
